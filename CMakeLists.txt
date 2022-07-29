@@ -13,7 +13,7 @@ if(CCACHE_PROGRAM)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
 
-project(Test-ftxui
+project(build-dir-status
   LANGUAGES CXX
   VERSION 0.0.1
 )
@@ -251,10 +251,10 @@ target_link_libraries(build_dir_status_lib
   ctre::ctre
 )
 
-add_executable(test-ftxui
+add_executable(build-dir-status
   src/main.cpp
 )
-target_link_libraries(test-ftxui
+target_link_libraries(build-dir-status
   PRIVATE
   build_dir_status_lib
   ftxui::screen
@@ -288,3 +288,40 @@ include(GoogleTest)
 gtest_discover_tests(tests
   # WORKING_DIRECTORY Testing
 )
+
+###############################################################################
+#                              P A C K A G I N G                              #
+###############################################################################
+
+
+if (APPLE)
+  set(CPACK_IFW_TARGET_DIRECTORY /Applications/build-dir-status-${PROJECT_VERSION}/)
+elseif(UNIX)
+
+  # For debug
+  # set(CPACK_DEBIAN_PACKAGE_DEBUG ON)
+
+  set(CPACK_DEBIAN_PACKAGE_DEPENDS "")
+
+  # These two will set the .deb install path correctly
+  set(CPACK_SET_DESTDIR ON)
+  set(CPACK_DEBIAN_PACKAGE_NAME "build-dir-status-${PROJECT_VERSION}")
+
+  set(CPACK_INSTALL_PREFIX /usr/local/${CPACK_DEBIAN_PACKAGE_NAME})
+  set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Julien Marrec")
+
+elseif(WIN32)
+  set(CPACK_PACKAGE_INSTALL_DIRECTORY "build-dir-status-${PROJECT_VERSION}")
+  set(CPACK_IFW_TARGET_DIRECTORY "C:/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
+  set(CPACK_BINARY_IFW ON CACHE BOOL "Enable to build IFW packages")
+endif()
+
+include(CPack)
+include(CPackIFW)
+
+cpack_add_component(Executable
+  DISPLAY_NAME "build-dir-status"
+  DESCRIPTION "build-dir-status Exe"
+)
+
+install(TARGETS build-dir-status DESTINATION bin COMPONENT Executable)
