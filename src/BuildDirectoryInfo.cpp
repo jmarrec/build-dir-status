@@ -4,6 +4,7 @@
 #include <ctre.hpp>
 #include <fmt/format.h>
 
+#include <array>
 #include <fstream>
 #include <ostream>
 #include <string>
