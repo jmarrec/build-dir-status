@@ -43,7 +43,8 @@ TEST(BuildDirInfoTest, parseBranchFile) {
   ss << info;
   std::string serialized = ss.str();
   EXPECT_NE(std::string::npos, serialized.find("OpenStudio"));
-  EXPECT_NE(std::string::npos, serialized.find(R"(directoryPath="/home/julien/Software/build-dir-status/test/OS-build")"));
+  EXPECT_NE(std::string::npos, serialized.find("directoryPath="));
+  EXPECT_NE(std::string::npos, serialized.find("OS-build"));
   EXPECT_NE(std::string::npos, serialized.find("branch=4547_ATUSingleDuctInletSideMixer_DSOA, sha=cde1466a33, build_type=Release"));
   EXPECT_NE(std::string::npos, serialized.find("build_elapsed_time="));
   EXPECT_NE(std::string::npos, serialized.find("build_time=00:28"));
