@@ -33,7 +33,6 @@ jobs:
       run: |
           cppcheck \
             --std=c++20 \
-            --suppress=noExplicitConstructor \
             --inline-suppr \
             --enable=all \
             --template='[{file}:{line}]:({severity}),[{id}],{message}' \

@@ -39,7 +39,8 @@ TEST(BuildDirInfoTest, parseBranchFile) {
   EXPECT_NE("", info.build_elapsed_time);
 }
 
-TEST(BuildDirInfoTest, findAll) {
+// This test is specific to my machine
+TEST(BuildDirInfoTest, DISABLED_findAll) {
 
   auto buildDirInfos = BuildDirectoryInfo::findAllBuildDirectoryInfos();
   EXPECT_GT(buildDirInfos.size(), 2);
@@ -52,7 +53,7 @@ TEST(BuildDirInfoTest, findAll) {
   EXPECT_GE(countForProject("OpenStudioApplication"), 2);
   EXPECT_GE(countForProject("EnergyPlus"), 2);
 
-  for (const auto& buildDirInfo : buildDirInfos) {
-    EXPECT_FALSE(true) << buildDirInfo;
-  }
+  // for (const auto& buildDirInfo : buildDirInfos) {
+  //   EXPECT_FALSE(true) << buildDirInfo;
+  // }
 }

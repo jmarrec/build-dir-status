@@ -29,6 +29,7 @@ ftxui::Element highLevelInfo(const BuilDirInfoMap& buildDirInfoMap) {
   int nTot = 0;
   std::map<std::string, int> numByProject;
 
+  // cppcheck-suppress unassignedVariable
   for (const auto& [tabName, infos] : buildDirInfoMap) {
     numByProject[tabName] = 0;
     for (const auto& info : infos) {
@@ -83,20 +84,19 @@ int main() {
 
   for (auto& [tabName, infos] : buildDirInfoMap) {
 
-    // std::vector<ftxui::Element> tableRow;
+    std::vector<std::vector<ftxui::Element>> tableRows;
 
     auto container = ftxui::Container::Vertical({});
     for (auto& info : infos) {
 
-      // auto rowContainer = ftxui::Container::Horizontal({});
+      std::vector<ftxui::Element> tableRow;
 
       auto option = ftxui::CheckboxOption();
       option.on_change = [&build_info, &info]() { build_info = BuildDirInfo(info.first); };
       auto checkbox = ftxui::Checkbox(info.first.directoryPath.filename().string(), &(info.second), option);
       // checkbox->OnEvent(ftxui::Event(   FOCUS_EVENT
-      container->Add(checkbox);
-
-      //tableRow.push_back(ftxui::text(info.first.directoryPath.filename().string()));
+      tableRow.push_back(checkbox->Render());
+      tableRow.push_back(ftxui::text(info.first.directoryPath.filename().string()));
     }
     tab_container->Add(container);
 
