@@ -273,6 +273,7 @@ configure_file("${TEST_DIR_PATH}/resources.hxx.in" "${PROJECT_BINARY_DIR}/src/re
 
 add_executable(tests
   test/BuildDirectoryInfo_GTest.cpp
+  test/TimeUtilities_GTest.cpp
   ${PROJECT_BINARY_DIR}/src/resources.hxx
 )
 target_link_libraries(tests
