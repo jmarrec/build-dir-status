@@ -7,6 +7,8 @@
 
 My C++ utility using [FTXUI](https://github.com/ArthurSonzogni/FTXUI) to select the build folders I want to refresh (overnight).
 
+![demo](doc/build-dir-status.gif)
+
 I have a `ninja.sh` bash file that I use in all of my C++ build folders and that will output a `.branch` hidden file with the following content:
 
 ```
@@ -40,6 +42,8 @@ My python one reports for eg this:
 | Project2-build          | Debug        | branch1 | 20:26          | cde1466a33  | 00:25        | home       |
 | Project2-build-release  | Release      | branch2 | 20:01          | cde1466a33  | 00:28        | home       |
 ```
+
+This is a C++ tool that does the same thing: it goes to parse all the .branch files it finds to build a struct of information about that build (cf [BuildDirectory.hpp](src/BuildDirectoryInfo.hpp)), and uses FTXUI to let you select the ones you want.
 
 ---
 
