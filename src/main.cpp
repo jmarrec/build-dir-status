@@ -1,9 +1,10 @@
 #include "BuildDirectoryInfo.hpp"
 
 #include <array>
-#include <memory>  // for shared_ptr, __shared_ptr_access
-#include <string>  // for string, basic_string, operator+, to_string
-#include <vector>  // for vector
+#include <memory>   // for shared_ptr, __shared_ptr_access
+#include <string>   // for string, basic_string, operator+, to_string
+#include <sstream>  // for stringstream
+#include <vector>   // for vector
 
 #include <ftxui/component/captured_mouse.hpp>      // for ftxui
 #include <ftxui/component/component.hpp>           // for Input, Renderer, Vertical
@@ -22,7 +23,14 @@ using DirInfoAndState = std::pair<build_dir_status::BuildDirectoryInfo, bool>;
 using BuilDirInfoMap = std::map<std::string, std::vector<DirInfoAndState>>;
 
 ftxui::Element BuildDirInfo(const build_dir_status::BuildDirectoryInfo& info) {
-  return ftxui::text(info.build_type);
+  std::stringstream ss;
+  ss << info;
+  std::vector<ftxui::Element> rows;
+  for (std::string line; std::getline(ss, line);) {
+    rows.push_back(ftxui::text(line));
+  }
+
+  return ftxui::vbox(rows);
 }
 
 ftxui::Element highLevelInfo(const BuilDirInfoMap& buildDirInfoMap) {
@@ -84,19 +92,20 @@ int main() {
 
   for (auto& [tabName, infos] : buildDirInfoMap) {
 
-    std::vector<std::vector<ftxui::Element>> tableRows;
+    // std::vector<std::vector<ftxui::Element>> tableRows;
 
     auto container = ftxui::Container::Vertical({});
     for (auto& info : infos) {
 
-      std::vector<ftxui::Element> tableRow;
+      // std::vector<ftxui::Element> tableRow;
 
       auto option = ftxui::CheckboxOption();
       option.on_change = [&build_info, &info]() { build_info = BuildDirInfo(info.first); };
       auto checkbox = ftxui::Checkbox(info.first.directoryPath.filename().string(), &(info.second), option);
       // checkbox->OnEvent(ftxui::Event(   FOCUS_EVENT
-      tableRow.push_back(checkbox->Render());
-      tableRow.push_back(ftxui::text(info.first.directoryPath.filename().string()));
+      // tableRow.push_back(checkbox->Render());
+      // tableRow.push_back(ftxui::text(info.first.directoryPath.filename().string()));
+      container->Add(checkbox);
     }
     tab_container->Add(container);
 
