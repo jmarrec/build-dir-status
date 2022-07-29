@@ -1,6 +1,7 @@
 #include "BuildDirectoryInfo.hpp"
 
 #include <array>
+#include <map>
 #include <memory>   // for shared_ptr, __shared_ptr_access
 #include <string>   // for string, basic_string, operator+, to_string
 #include <sstream>  // for stringstream

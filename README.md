@@ -41,5 +41,14 @@ My python one reports for eg this:
 | Project2-build-release  | Release      | branch2 | 20:01          | cde1466a33  | 00:28        | home       |
 ```
 
-See:
-* the Github Actions workflow at [.github/workflows/build.yml](.github/workflows/build.yml)
+---
+
+### Notes:
+
+I'm having some trouble running `iwyu` via CMake (some LLVM internal error which makes the build fail), so instead I run locally via:
+
+```shell
+mkdir build && cd build
+cmake -G Ninja -DCMAKE_BUILD_TYPE:STRING=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON ..
+iwyu_tool.py -p . -- -Xiwyu --mapping_file=../iwyu.imp
+```

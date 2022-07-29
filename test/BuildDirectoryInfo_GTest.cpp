@@ -4,11 +4,14 @@
 
 #include <src/resources.hxx>
 
-#include <algorithm>
-#include <filesystem>
-#include <string>
-#include <sstream>
-#include <string_view>
+#include <algorithm>    // for count_if
+#include <chrono>       // for filesystem
+#include <filesystem>   // for operator/, path, exists
+#include <iterator>     // for cbegin, cend
+#include <sstream>      // for stringstream, ostream
+#include <string>       // for string, allocator
+#include <string_view>  // for operator==, string_view
+#include <vector>       // for vector
 
 namespace fs = std::filesystem;
 using namespace build_dir_status;

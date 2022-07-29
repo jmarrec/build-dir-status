@@ -1,13 +1,12 @@
 #include "BuildDirectoryInfo.hpp"
-#include "TimeUtilities.hpp"
+#include "TimeUtilities.hpp"  // for elapsed_time
 
-#include <ctre.hpp>
-#include <fmt/format.h>
+#include <ctre.hpp>  // IWYU pragma: keep
 
-#include <array>
-#include <fstream>
-#include <ostream>
-#include <string>
+#include <array>    // for array
+#include <fstream>  // for ifstream  // IWYU pragma: keep
+#include <sstream>  // for operator<<, basic_ostream, basic_str...
+#include <string>   // for char_traits, string, operator<<, get...
 
 namespace build_dir_status {
 

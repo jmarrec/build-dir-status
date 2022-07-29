@@ -1,10 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "../src/TimeUtilities.hpp"
+#include "../src/TimeUtilities.hpp"  // for elapsed_time, convert_str_to_time_t
 
-#include <algorithm>
-#include <string>
-#include <string_view>
+#include <string>  // for string, allocator
 
 using namespace build_dir_status;
 

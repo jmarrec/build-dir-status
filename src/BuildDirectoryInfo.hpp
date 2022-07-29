@@ -1,9 +1,11 @@
 #ifndef BUILDIRINFO_HPP
 #define BUILDIRINFO_HPP
 
-#include <filesystem>
-#include <map>
-#include <vector>
+#include <chrono>      // for filesystem
+#include <filesystem>  // for path
+#include <ostream>     // for ostream
+#include <string>      // for string
+#include <vector>      // for vector
 
 namespace build_dir_status {
 

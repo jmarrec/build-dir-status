@@ -56,36 +56,26 @@ target_compile_features(project_options INTERFACE cxx_std_20)
 ###############################################################################
 #                                  N I N J A                                  #
 ###############################################################################
-# Ninja support: has to be atop for it to take effect before anything else is done
-# Add Color Output if Using Ninja
-macro(AddCXXFlagIfSupported flag test)
-  CHECK_CXX_COMPILER_FLAG(${flag} ${test})
-  if(${${test}})
-    message("adding ${flag}")
-    target_compile_options(project_options INTERFACE "${flag}")
+# Enhance error reporting and compiler messages
+if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+  if(WIN32)
+    # On Windows cuda nvcc uses cl and not clang
+    add_compile_options($<$<COMPILE_LANGUAGE:C>:-fcolor-diagnostics> $<$<COMPILE_LANGUAGE:CXX>:-fcolor-diagnostics>)
+  else()
+    add_compile_options(-fcolor-diagnostics)
   endif()
-endmacro()
-
-if("Ninja" STREQUAL ${CMAKE_GENERATOR})
-  # Clang
-  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    AddCXXFlagIfSupported(-fcolor-diagnostics COMPILER_SUPPORTS_fcolor-diagnostics)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  if(WIN32)
+    # On Windows cuda nvcc uses cl and not gcc
+    add_compile_options($<$<COMPILE_LANGUAGE:C>:-fdiagnostics-color=always>
+                        $<$<COMPILE_LANGUAGE:CXX>:-fdiagnostics-color=always>)
+  else()
+    add_compile_options(-fdiagnostics-color=always)
   endif()
-
-  # g++
-  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    # For some reason it doesn't say its supported, but it works...
-    # AddCXXFlagIfSupported(-fdiagnostics-color COMPILER_SUPPORTS_fdiagnostics-color)
-    message(STATUS "Ninja: Forcing -fdiagnostics-color=always")
-    target_compile_options(project_options INTERFACE -fdiagnostics-color=always)
-  endif()
-endif()
-
-# Xcode/Ninja generators undefined MAKE
-if(CMAKE_GENERATOR MATCHES "Make")
-  set(MAKE "$(MAKE)")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND MSVC_VERSION GREATER 1900)
+  add_compile_options(/diagnostics:column)
 else()
-  set(MAKE make)
+  message(STATUS "No colored compiler diagnostic set for '${CMAKE_CXX_COMPILER_ID}' compiler.")
 endif()
 
 # Enable runtime checking features: TSAN, ASAN, UBSAN
@@ -235,6 +225,21 @@ find_package(GTest REQUIRED)
 #                              E X E C U T A B L E                            #
 ###############################################################################
 
+option(INCLUDE_WHAT_YOU_USE OFF)
+
+set(IWYU_GLOBAL TRUE)
+
+# Enable globally:
+if (INCLUDE_WHAT_YOU_USE AND IWYU_GLOBAL)
+  find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
+  set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path} -Xiwyu
+      --mapping_file=${CMAKE_CURRENT_SOURCE_DIR}/iwyu.imp
+  )
+  message("CMAKE_CXX_INCLUDE_WHAT_YOU_USE=${CMAKE_CXX_INCLUDE_WHAT_YOU_USE}")
+endif()
+
+find_program(iwyu_path NAMES include-what-you-use iwyu)
+
 include_directories(${PROJECT_BINARY_DIR})
 
 add_library(build_dir_status_lib
@@ -243,6 +248,14 @@ add_library(build_dir_status_lib
   src/TimeUtilities.cpp
   src/TimeUtilities.hpp
 )
+
+# Enable only on target:
+if(INCLUDE_WHAT_YOU_USE AND NOT IWYU_GLOBAL)
+  set_property(TARGET build_dir_status_lib
+    PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path} -Xiwyu
+      --mapping_file ${CMAKE_CURRENT_SOURCE_DIR}/iwyu.imp
+  )
+endif()
 
 target_link_libraries(build_dir_status_lib
   PRIVATE
