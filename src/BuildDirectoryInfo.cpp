@@ -76,11 +76,13 @@ BuildDirectoryInfo BuildDirectoryInfo::parseBranchFile(const fs::path& branchPat
 // std::map<std::string, std::vector<BuildDirectoryInfo>> findAllBuildDirectoryInfos() {
 
 std::vector<BuildDirectoryInfo> BuildDirectoryInfo::findAllBuildDirectoryInfos() {
-  std::array<fs::path, 4> potentialRootDirs{
+  std::array<fs::path, 5> potentialRootDirs{
     fs::path("/home/julien/Software/Others/"),
     fs::path("/media/DataExt4/Software/Others/"),
     fs::path("/Users/julien/Software/Others/"),
     fs::path("C:/src/"),
+    // Cur Dir
+    fs::absolute(fs::path(".")),
   };
 
   std::vector<BuildDirectoryInfo> result;

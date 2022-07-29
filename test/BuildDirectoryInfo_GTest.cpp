@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <string>
+#include <sstream>
 #include <string_view>
 
 namespace fs = std::filesystem;
@@ -37,10 +38,19 @@ TEST(BuildDirInfoTest, parseBranchFile) {
   EXPECT_EQ("00:28", info.build_time);
   // This depends on the currrent time...
   EXPECT_NE("", info.build_elapsed_time);
+
+  std::stringstream ss;
+  ss << info;
+  std::string serialized = ss.str();
+  EXPECT_NE(std::string::npos, serialized.find("OpenStudio"));
+  EXPECT_NE(std::string::npos, serialized.find(R"(directoryPath="/home/julien/Software/build-dir-status/test/OS-build")"));
+  EXPECT_NE(std::string::npos, serialized.find("branch=4547_ATUSingleDuctInletSideMixer_DSOA, sha=cde1466a33, build_type=Release"));
+  EXPECT_NE(std::string::npos, serialized.find("build_elapsed_time="));
+  EXPECT_NE(std::string::npos, serialized.find("build_time=00:28"));
 }
 
 // This test is specific to my machine
-TEST(BuildDirInfoTest, DISABLED_findAll) {
+TEST(BuildDirInfoTest, findAll) {
 
   auto buildDirInfos = BuildDirectoryInfo::findAllBuildDirectoryInfos();
   EXPECT_GT(buildDirInfos.size(), 2);

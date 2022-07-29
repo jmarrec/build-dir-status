@@ -73,6 +73,21 @@ jobs:
 
         mkdir build
 
+    - name: Make some fake build folders
+      working-directory: ./build
+      shell: python
+      run: |
+        from pathlib import Path
+        import shutil
+
+        folders = ["EnergyPlus-build", "EnergyPlus-build-release", "OS-build", "OS-build-release", "OSApp-build", "OSApp-build-release"]
+        branch_example = Path('../test/branch_test.txt')
+        for f in folders:
+            p = Path(f)
+            p.mkdir(exist_ok=True)
+            branch = p / '.branch'
+            shutil.copy(str(branch_example), str(branch))
+
     - name: CMake configure (Unix)
       if: runner.os != 'Windows'
       working-directory: ./build
