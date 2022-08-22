@@ -5,7 +5,8 @@
 #include <memory>   // for shared_ptr, __shared_ptr_access
 #include <string>   // for string, basic_string, operator+, to_string
 #include <sstream>  // for stringstream
-#include <vector>   // for vector
+#include <thread>
+#include <vector>  // for vector
 
 #include <ftxui/component/captured_mouse.hpp>      // for ftxui
 #include <ftxui/component/component.hpp>           // for Input, Renderer, Vertical
@@ -145,6 +146,8 @@ int main() {
 
   screen.Loop(renderer);
 
+  unsigned int nthreads = std::thread::hardware_concurrency();
+
   // On exit, we print the needed command to stdout
   bool firstTime = true;
   for (const auto& [tabName, infos] : buildDirInfoMap) {
@@ -153,7 +156,7 @@ int main() {
         if (!firstTime) {
           fmt::print(" \\\n");
         }
-        fmt::print("cd {} && N=14 ./ninja.sh None;", info.first.directoryPath.string());
+        fmt::print("cd {} && N={} ./ninja.sh None;", info.first.directoryPath.string(), nthreads);
         firstTime = false;
       }
     }
